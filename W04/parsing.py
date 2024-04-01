@@ -1,22 +1,29 @@
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
+import numpy as np
 
+# XML 파일 불러오기
 with open("HY202103_D07_(0,0)_LION1_DCM_LMZC.xml", "r") as f:
     xml_data = f.read()
 
 soup = BeautifulSoup(xml_data, "xml")
 
+# IVMeasurement 추출
 IVMeasurement = soup.find("IVMeasurement")
+
+# voltage, current 저장
 vol = list(map(float, IVMeasurement.find("Voltage").text.split(",")))
 cur = list(map(float, IVMeasurement.find("Current").text.split(",")))
+cur = list(map(np.abs(float), cur))
+
 print("voltage:", vol)
 print("current:", cur)
 
-
+# plotting
 plt.plot(vol, cur)
 plt.xlabel("Voltage [V]")
 plt.ylabel("Current [A]")
-plt.yscale("symlog")
+plt.yscale("log")
 plt.title("I-V")
 plt.show()
 
