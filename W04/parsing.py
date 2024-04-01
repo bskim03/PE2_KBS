@@ -14,7 +14,7 @@ IVMeasurement = soup.find("IVMeasurement")
 # voltage, current 저장
 vol = list(map(float, IVMeasurement.find("Voltage").text.split(",")))
 cur = list(map(float, IVMeasurement.find("Current").text.split(",")))
-cur = list(map(np.abs(float), cur))
+cur = list(map(np.abs, cur))
 
 print("voltage:", vol)
 print("current:", cur)
@@ -25,6 +25,7 @@ plt.xlabel("Voltage [V]")
 plt.ylabel("Current [A]")
 plt.yscale("log")
 plt.title("I-V")
+plt.grid(True)
 plt.show()
 
 # WavelengthSweep = soup.find_all("WavelengthSweep")
