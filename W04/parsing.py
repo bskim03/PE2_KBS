@@ -12,9 +12,8 @@ soup = BeautifulSoup(xml_data, "xml")
 IVMeasurement = soup.find("IVMeasurement")
 
 # voltage, current 저장
-vol = list(map(float, IVMeasurement.find("Voltage").text.split(",")))
-cur = list(map(float, IVMeasurement.find("Current").text.split(",")))
-cur = list(map(np.abs, cur))
+vol = [float(v) for v in IVMeasurement.find("Voltage").text.split(",")]
+cur = [np.abs(float(c)) for c in IVMeasurement.find("Current").text.split(",")]
 
 print("voltage:", vol)
 print("current:", cur)
