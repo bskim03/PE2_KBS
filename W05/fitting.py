@@ -24,23 +24,21 @@ predicted_cur = model(vol)
 x_space = np.linspace(-2, 1, 260)
 predicted_cur2 = model(x_space)
 
-
 # R 제곱 값 계산
 mean_cur = np.mean(cur)
 rss = np.sum((predicted_cur - mean_cur) ** 2)
 tss = np.sum((cur - mean_cur) ** 2)
 r_squared = rss / tss
 
-print("R$^2$ =", r_squared)
+# print("R^2 =", r_squared)
 
-
-
-# plt.figure(figsize=(15, 5))
 plt.title("I-V Characteristics")
+# 측정 데이터 표시
 plt.scatter(vol, np.abs(cur))
+
+# 피팅 데이터 표시
 plt.plot(x_space, np.abs(predicted_cur2), label=f"R$^2$ = {r_squared}", color="red")
-# plt.scatter(vol, cur)
-# plt.plot(x_space, predicted_cur2, label=f"R$^2$ = {r_squared}", color="red")
+
 plt.legend()
 plt.yticks([1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3])
 plt.xlabel("Voltage (V)")
