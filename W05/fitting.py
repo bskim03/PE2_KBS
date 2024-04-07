@@ -40,8 +40,10 @@ plt.plot(vol, np.abs(predicted_cur1), label=f"R$^2$ = {r_squared}", color="red")
 
 # -2V, -1V, 1V 지점에 전류값 표시
 for point in [-2, -1, 1]:
-    plt.text(vol[i := np.where(vol == point)[0][0]], y := np.abs(cur[i]), f"{y:.4e}", ha="center", va="bottom",
-             fontsize="large")
+    index = np.where(vol == point)[0][0])
+    x = vol[index]
+    y = np.abs(cur[index])
+    plt.text(x, y, f"{y:.4e}", ha="center", va="bottom", fontsize="large")
 
 plt.legend(loc="center left")
 plt.title("I-V Raw data + Fitted data")
