@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 import matplotlib.pyplot as plt
 
-with open("E:\Dev\PE2\HY202103_D07_(0,0)_LION1_DCM_LMZC.xml", "r") as f:
+with open("../HY202103_D07_(0,0)_LION1_DCM_LMZC.xml/", "r") as f:
     xml_data = f.read()
 
 soup = BeautifulSoup(xml_data, "xml")
