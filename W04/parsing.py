@@ -27,6 +27,7 @@ plt.title("I-V")
 plt.grid(True)
 plt.show()
 
+
 # WavelengthSweep = soup.find_all("WavelengthSweep")
 # for ws in WavelengthSweep:
 #    l = list(map(float, ws.find("L").text.split(",")))
@@ -34,3 +35,24 @@ plt.show()
 #    plt.plot(l, il)
 
 # plt.show()
+
+class Parser:
+    def __init__(self, path):
+        self.path = path
+        with open(path, "r") as f:
+            self.xml_data = f.read()
+
+        self.soup = BeautifulSoup(self.xml_data, "xml")
+
+    def parse_iv(self):
+        IVMeasurement= soup.find("IVMeasurement")
+        vol = [float(v) for v in IVMeasurement.find("Voltage").text.split(",")]
+        cur= [np.abs(float(c)) for c in IVMeasurement.find("Current").text.split(",")]
+        return vol, cur
+
+    def parse_transmission(self):
+        WavelengthSweep = soup.find_all("WavelengthSweep")
+        dcbias = [ws.attrs['DCBias'] + "V" for ws in WavelengthSweep]
+
+
+
