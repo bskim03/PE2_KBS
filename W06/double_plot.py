@@ -14,20 +14,21 @@ cur = np.array([float(c) for c in IVMeasurement.find("Current").text.split(",")]
 vol[8] += 1e-3
 
 
-def diode_model(v, isat, vt, n, a):
-    return isat * (np.power(a, v / (vt * n)) - 1)
+def diode_model(v, isat, n):
+    return isat * (np.exp(v / (26e-3 * n)) - 1)
 
 
 model = Model(diode_model)
-params = model.make_params(isat=-5e-16, vt=26e-3, n=1, a=2)
+params = model.make_params(isat=-1.06e-8, n=1)
 params['n'].min = 1
 result = model.fit(cur, v=vol, params=params)
 print(result.fit_report())
-
+print(result.params)
 plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.scatter(vol, np.abs(cur))
-plt.plot(vol, np.abs(result.best_fit), label='Fitted data', color='red')
+plt.plot(x := np.linspace(-2, 1, 100), np.abs(diode_model(x, *result.params.values())), label='Fitted data',
+         color='red')
 plt.title("I-V Measured data")
 plt.yscale('log')
 plt.xlabel('Voltage [V]')
