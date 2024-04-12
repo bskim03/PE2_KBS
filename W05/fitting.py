@@ -15,7 +15,7 @@ vol = np.array([float(v) for v in IVMeasurement.find("Voltage").text.split(",")]
 cur = np.array([float(c) for c in IVMeasurement.find("Current").text.split(",")])
 
 # 다항 회귀 모델 생성
-model = np.poly1d(np.polyfit(vol, cur, 12))
+model = np.poly1d(np.polyfit(vol, cur, 10))
 
 # 피팅 전류 값 생성
 predicted_cur = model(vol)
@@ -37,7 +37,7 @@ plt.scatter(vol, np.abs(cur))
 
 # 피팅 데이터 표시
 plt.plot(vol, np.abs(predicted_cur), label=f"R$^2$ = {r_squared}", color="red")
-# plt.plot(x_space, np.abs(predicted_cur_continuous), color="red")
+plt.plot(x_space, np.abs(predicted_cur_continuous), color="red")
 
 # -2V, -1V, 1V 지점에 전류값 표시
 for point in [-2, -1, 1]:
