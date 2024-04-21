@@ -6,7 +6,7 @@ import matplotlib.ticker as ticker
 from lmfit import Model
 
 
-def to_ordinal(n):
+def to_ordinal(n) -> str:
     # 기수를 서수로 바꿈
     if n % 10 == 1 and n % 100 != 11:
         return str(n) + "st"
@@ -18,7 +18,7 @@ def to_ordinal(n):
         return str(n) + "th"
 
 
-def coeff_to_formula(coeff):
+def coeff_to_formula(coeff) -> str:
     # 다항식 계수를 받아 수식으로 반환
     result = ""
     for i in range(len(coeff)):
@@ -47,6 +47,7 @@ soup = BeautifulSoup(xml_data, "xml")
 WavelengthSweep = soup.find_all("WavelengthSweep")
 IVMeasurement = soup.find("IVMeasurement")
 f.close()
+
 vol = np.array([float(v) for v in IVMeasurement.find("Voltage").text.split(",")])
 cur = np.array([float(i) for i in IVMeasurement.find("Current").text.split(",")])
 
@@ -59,7 +60,7 @@ fontsize = 12
 
 # Transmission 측정 그래프 표시
 for ws in WavelengthSweep[:-1]:
-    vol_str: str = ws.attrs['DCBias'] + "V"
+    vol_str = ws.attrs['DCBias'] + "V"
     l = np.array([float(_l) for _l in ws.find("L").text.split(",")])
     il = np.array([float(_il) for _il in ws.find("IL").text.split(",")])
     ax1.plot(l, il, label=vol_str)
