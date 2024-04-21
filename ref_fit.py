@@ -5,6 +5,7 @@ from sklearn.metrics import r2_score
 
 
 def to_ordinal(n):
+    # 기수를 서수로 바꿈
     if n % 10 == 1 and n % 100 != 11:
         return str(n) + "st"
     elif n % 10 == 2 and n % 100 != 12:
@@ -16,6 +17,7 @@ def to_ordinal(n):
 
 
 def coeff_to_formula(coeff):
+    # 다항식 계수를 받아 수식으로 반환
     result = ""
     for i in range(len(coeff)):
         result += f"{coeff[len(coeff) - i]:.1e}"
