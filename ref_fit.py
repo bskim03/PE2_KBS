@@ -33,7 +33,7 @@ def coeff_to_formula(coeff) -> str:
     return result
 
 
-def diode_model(voltage: float, isat: float, vt: float, n: float) -> float:
+def diode_model(voltage, isat: float, vt: float, n: float) -> float:
     # isat: saturation current
     # vt: thermal voltage
     # n: ideality factor
@@ -68,10 +68,11 @@ for ws in WavelengthSweep[:-1]:
 ws = WavelengthSweep[-1]
 l = np.array([float(_l) for _l in ws.find("L").text.split(",")])
 il = np.array([float(_il) for _il in ws.find("IL").text.split(",")])
-
 ax1.plot(l, il)
+
 ax1.annotate("(-2.0V) Max transmission: -8.881 dB @ 1557.0125 nm", xy=[1530, -3], fontsize=fontsize)
 ax1.annotate("(-2.0V) Min  transmission: -48.65 dB @ 1565.4627 nm", xy=[1530, -5], fontsize=fontsize)
+
 ax1.legend(loc='lower center', ncol=3, fontsize=fontsize)
 ax1.set_ylim(-52, -0)
 ax1.set_title('Transmission spectra - As measured', fontsize=fontsize)
@@ -80,25 +81,29 @@ ax1.set_ylabel('Measured Transmission [dB]', fontsize=fontsize)
 ax1.tick_params(axis='both', direction='in', labelsize=fontsize)
 
 # 다항 회귀 모델 생성
-polyfit_range = range(1, 5, 1)
+polyfit_range = range(1, 7, 1)
 models = [np.poly1d(np.polyfit(l, il, deg)) for deg in polyfit_range]
 predicted_ils = np.array([models[i](l) for i in range(len(models))])
-print(models[3])
+
 r2_scores = [r2_score(il, predicted_ils[i]) for i in range(len(models))]
 
 # Ref 피팅 그래프 표시
-ax2.plot(l, il)
+ax2.plot(l, il, label='Reference')
 for i in range(len(models)):
-    ax2.plot(l, predicted_ils[i], label=to_ordinal(i + 1))
-ax2.set_title('Transmission spectra - Processed and fitted', fontsize=fontsize)
+    ax2.plot(l, predicted_ils[i], label=f"{to_ordinal(i + 1)} fit")
+
+ax2.annotate(coeff_to_formula(models[3]), xy=[1542, -11.5], fontsize=fontsize)
+for i in range(1, len(r2_scores)):
+    ax2.annotate(f"{to_ordinal(i+1)} R$^2$={r2_scores[i]}", xy=[1542, -12.25 - 0.5 * i], fontsize=fontsize)
+ax2.annotate(f"Max: {max(il):.2f} dB @ {l[np.where(il==max(il))[0][0]]} nm", xy=[1528, -8], fontsize=fontsize)
+ax2.annotate(f"Min: {min(il):.2f} dB @ {l[np.where(il==min(il))[0][0]]} nm", xy=[1528, -8.5], fontsize=fontsize)
+
+ax2.set_title('Transmission spectra reference - Fitted', fontsize=fontsize)
 ax2.set_xlabel('Wavelength [nm]', fontsize=fontsize)
 ax2.set_ylabel('Measured Transmission [dB]', fontsize=fontsize)
 ax2.tick_params(axis='both', direction='in', labelsize=fontsize)
-
-for i in range(3):
-    ax2.annotate(coeff_to_formula(models[i + 1]), xy=[1542, -11.5 - 1.75 * i], fontsize=fontsize)
-    ax2.annotate(f"R$^2$={r2_scores[i + 1]}", xy=[1542, -12.25 - 1.75 * i], fontsize=fontsize)
-ax2.legend(loc="upper left", fontsize=fontsize, ncol=3)
+ax2.legend(loc="upper left", fontsize=fontsize, ncol=4)
+ax2.set_ylim(-16.1, -5.9)
 
 # I-V measurement 표시
 model_pos = Model(diode_model)
@@ -122,17 +127,19 @@ cur_pred_continuous = np.concatenate((cur_pred_continuous_neg, cur_pred_continuo
 cur_pred_discrete_pos = diode_model(vol[8:], *params_new_pos)
 cur_pred_discrete_neg = diode_model(vol[:8], *params_new_neg)
 cur_pred_discrete = np.concatenate((cur_pred_discrete_neg, cur_pred_discrete_pos))
+
 r2_score_iv = r2_score(cur, cur_pred_discrete)
 
 ax3.scatter(vol, np.abs(cur), label='Measured')
 ax3.plot(x_new, np.abs(cur_pred_continuous), 'r', label=f'Fitted')
+
 ax3.annotate(f"R$^2$={r2_score_iv}", xy=[-2.0, 1e-4], fontsize=fontsize)
 ax3.annotate(f"-1V={cur[4]}A", xy=[-2.0, 1e-5], fontsize=fontsize)
 ax3.annotate(f"+1V={cur[12]}A", xy=[-2.0, 1e-6], fontsize=fontsize)
+
 ax3.set_yscale('log')
 ax3.yaxis.set_major_locator(ticker.LogLocator(base=10, numticks=10))
-ax3.yaxis.set_minor_locator(
-    ticker.LogLocator(base=10, subs=(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), numticks=10))
+ax3.yaxis.set_minor_locator(ticker.LogLocator(base=10, subs=(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), numticks=10))
 ax3.legend(fontsize=fontsize)
 ax3.set_title('I-V Characteristics', fontsize=fontsize)
 ax3.set_xlabel('Voltage [V]', fontsize=fontsize)
