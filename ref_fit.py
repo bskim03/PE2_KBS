@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import r2_score
 import matplotlib.ticker as ticker
 from lmfit import Model
-
+import pandas as pd
 
 def to_ordinal(n) -> str:
     # 기수를 서수로 바꿈
@@ -46,6 +46,10 @@ with open("HY202103_D07_(0,0)_LION1_DCM_LMZC.xml", "r") as f:
 soup = BeautifulSoup(xml_data, "xml")
 WavelengthSweep = soup.find_all("WavelengthSweep")
 IVMeasurement = soup.find("IVMeasurement")
+
+test_site_info = soup.find("TestSiteInfo").attrs
+df = pd.DataFrame(test_site_info, index=[0])
+
 f.close()
 
 vol = np.array([float(v) for v in IVMeasurement.find("Voltage").text.split(",")])
@@ -148,3 +152,5 @@ ax3.tick_params(axis='both', direction='in', which='both', labelsize=fontsize)
 
 plt.tight_layout()
 plt.show()
+
+from export_dataframe import export
