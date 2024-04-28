@@ -27,6 +27,7 @@ fontsize = 12
 for i in range(len(transmission['vol'])):
     ax1.plot(transmission['l'][i], transmission['il'][i], label=transmission['vol'][i])
 ax1.plot(ref['l'], ref['il'], label='reference')
+
 ax1.legend(loc='lower center', ncol=4, fontsize=fontsize)
 ax1.set_ylim(-52, -0)
 ax1.set_title('Transmission spectra - As measured', fontsize=fontsize)
@@ -36,9 +37,11 @@ ax1.tick_params(axis='both', direction='in', labelsize=fontsize)
 
 # --------------------------------- Fitted transmission reference plotting  --------------------------------- #
 predicted_ils, ref_r2_scores, fit_labels = transmission_process.fit_ref(ref)
+
 for i in range(len(predicted_ils)):
     ax2.plot(ref['l'], predicted_ils[i], label=fit_labels[i])
 ax2.plot(ref['l'], ref['il'], label='Reference')
+
 ax2.set_title('Transmission spectra reference - Fitted', fontsize=fontsize)
 ax2.set_xlabel('Wavelength [nm]', fontsize=fontsize)
 ax2.set_ylabel('Measured Transmission [dB]', fontsize=fontsize)
@@ -48,9 +51,11 @@ ax2.set_ylim(-16.1, -5.9)
 
 # --------------------------------- Processed transmission reference plotting  --------------------------------- #
 processed_trans = transmission_process.process(transmission, ref)
+
 for i in range(len(processed_trans['l'])):
     ax3.plot(processed_trans['l'][i], processed_trans['il'][i], label=processed_trans['vol'][i])
 ax3.plot(ref['l'], ref['il'] - predicted_ils[3])
+
 ax3.set_title('Flat Transmission spectra - As measured', fontsize=fontsize)
 ax3.set_xlabel('Wavelength [nm]', fontsize=fontsize)
 ax3.set_ylabel('Flat Measured Transmission [dB]', fontsize=fontsize)
@@ -59,8 +64,10 @@ ax3.legend()
 
 # --------------------------------- IV characteristics plotting --------------------------------- #
 x_new, cur_pred_continuous, r2_score_iv = iv_process.fit(vol, cur)
+
 ax4.scatter(vol, np.abs(cur), label='Measured')
 ax4.plot(x_new, np.abs(cur_pred_continuous), 'r', label=f'Fitted')
+
 ax4.set_yscale('log')
 ax4.yaxis.set_major_locator(ticker.LogLocator(base=10, numticks=10))
 ax4.yaxis.set_minor_locator(
@@ -75,7 +82,9 @@ ax4.tick_params(axis='both', direction='in', which='both', labelsize=fontsize)
 r2_ref_sixth = ref_r2_scores[5]
 cur_minus1 = cur[np.where(vol == -1)[0][0]]
 cur_plus1 = cur[np.where(vol == 1)[0][0]]
+
 export_dataframe.export(r2_ref_sixth, max(ref['il']), r2_score_iv, (cur_minus1, cur_plus1))
+
 
 plt.tight_layout()
 plt.show()
