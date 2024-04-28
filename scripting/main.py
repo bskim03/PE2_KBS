@@ -71,7 +71,13 @@ ax4.set_xlabel('Voltage [V]', fontsize=fontsize)
 ax4.set_ylabel('Log Absolute Current [A]', fontsize=fontsize)
 ax4.tick_params(axis='both', direction='in', which='both', labelsize=fontsize)
 
+# 데이터프레임 내보내기
+r2_ref_sixth = ref_r2_scores[5]
+cur_minus1 = cur[np.where(vol == -1)[0][0]]
+cur_plus1 = cur[np.where(vol == 1)[0][0]]
+export_dataframe.export(r2_ref_sixth, max(ref['il']), r2_score_iv, (cur_minus1, cur_plus1))
+
 plt.tight_layout()
 plt.show()
 
-# 할 일: 1. transmission 사인함수로 만들기 2. 데이터프레임 내보내기
+# 할 일: 1. transmission 사인함수로 만들기
