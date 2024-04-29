@@ -42,7 +42,7 @@ def get_data(wavelength_sweep):
 
 def fit_ref(ref):
     # 다항 회귀 모델 생성
-    polyfit_range = range(1, 5, 1)
+    polyfit_range = range(1, 7, 1)
     models = [np.poly1d(np.polyfit(ref['l'], ref['il'], deg)) for deg in polyfit_range]
     predicted_ils = np.array([models[i](ref['l']) for i in range(len(models))])
     fit_labels = [to_ordinal(i) for i in polyfit_range]

@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import numpy as np
 from sklearn.metrics import r2_score
 from lmfit import Model

@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-def export(R2_ref, Max_ref, R2_IV, I):
+def export_csv(R2_ref, Max_ref, R2_IV, I):
     with open("HY202103_D07_(0,0)_LION1_DCM_LMZC.xml", "r") as f:
         xml_data = f.read()
 

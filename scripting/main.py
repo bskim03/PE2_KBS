@@ -42,6 +42,12 @@ for i in range(len(predicted_ils)):
     ax2.plot(ref['l'], predicted_ils[i], label=fit_labels[i])
 ax2.plot(ref['l'], ref['il'], label='Reference')
 
+for i in range(1, len(ref_r2_scores)):
+    ax2.annotate(f"{transmission_process.to_ordinal(i+1)} R$^2$={ref_r2_scores[i]}", xy=[1542, -12.25 - 0.5 * i], fontsize=fontsize)
+ax2.annotate(f"Max: {max(il:=ref['il']):.2f} dB @ {ref['l'][np.where(il==max(il))[0][0]]} nm", xy=[1528, -8], fontsize=fontsize)
+ax2.annotate(f"Min: {min(il):.2f} dB @ {ref['l'][np.where(il==min(il))[0][0]]} nm", xy=[1528, -8.5], fontsize=fontsize)
+
+
 ax2.set_title('Transmission spectra reference - Fitted', fontsize=fontsize)
 ax2.set_xlabel('Wavelength [nm]', fontsize=fontsize)
 ax2.set_ylabel('Measured Transmission [dB]', fontsize=fontsize)
@@ -68,6 +74,10 @@ x_new, cur_pred_continuous, r2_score_iv = iv_process.fit(vol, cur)
 ax4.scatter(vol, np.abs(cur), label='Measured')
 ax4.plot(x_new, np.abs(cur_pred_continuous), 'r', label=f'Fitted')
 
+ax4.annotate(f"R$^2$={r2_score_iv}", xy=[-2.0, 1e-4], fontsize=fontsize)
+ax4.annotate(f"-1V={cur[4]}A", xy=[-2.0, 1e-5], fontsize=fontsize)
+ax4.annotate(f"+1V={cur[12]}A", xy=[-2.0, 1e-6], fontsize=fontsize)
+
 ax4.set_yscale('log')
 ax4.yaxis.set_major_locator(ticker.LogLocator(base=10, numticks=10))
 ax4.yaxis.set_minor_locator(
@@ -83,10 +93,10 @@ r2_ref_sixth = ref_r2_scores[5]
 cur_minus1 = cur[np.where(vol == -1)[0][0]]
 cur_plus1 = cur[np.where(vol == 1)[0][0]]
 
-export_dataframe.export(r2_ref_sixth, max(ref['il']), r2_score_iv, (cur_minus1, cur_plus1))
+export_dataframe.export_csv(r2_ref_sixth, max(ref['il']), r2_score_iv, (cur_minus1, cur_plus1))
 
 
 plt.tight_layout()
 plt.show()
 
-# 할 일: 1. transmission 사인함수로 만들기
+# 할 일: 1. 피크를 지나는 일차 함수 찾아서 빼기 2. transmission 사인함수로 만들기
